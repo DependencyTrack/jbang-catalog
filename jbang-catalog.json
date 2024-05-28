@@ -1,0 +1,9 @@
+{
+  "catalogs": {},
+  "aliases": {
+    "gen-config-docs": {
+      "script-ref": "GenerateConfigDocs.java",
+      "description": "Generate configuration documentation from application.properties"
+    }
+  }
+}
