@@ -4,6 +4,10 @@
     "gen-config-docs": {
       "script-ref": "GenerateConfigDocs.java",
       "description": "Generate configuration documentation from application.properties"
+    },
+    "gen-cwe-dict": {
+      "script-ref": "GenerateCweDictionary.java",
+      "description": "Generate a Java class holding a dictionary of CWE ID -> CWE Name mappings"
     }
   }
 }
