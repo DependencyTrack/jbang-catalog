@@ -126,16 +126,20 @@ public class GenerateConfigDocs implements Callable<Integer> {
                         """.formatted(property.name)));
             }
 
-            // Resolve known property names in the description and create hyperlinks for them.
+            // Resolve known property names in the description and deprecation message, and create hyperlinks for them.
             for (final Map.Entry<String, String> anchorByPropertyName : anchorsByPropertyName.entrySet()) {
-                if (property.description == null || property.description.isBlank()) {
-                    continue;
-                }
-
-                property.description = property.description.replaceAll(
-                        Pattern.quote(anchorByPropertyName.getKey()),
+                if (property.description != null && !property.description.isBlank()) {
+                    property.description = property.description.replaceAll(
+                        "\\b" + Pattern.quote(anchorByPropertyName.getKey()) + "\\b",
                         "[`%s`](%s)".formatted(anchorByPropertyName.getKey(), anchorByPropertyName.getValue())
-                );
+                    );
+                }
+                if (property.deprecated != null && !property.deprecated.isBlank()) {
+                    property.deprecated = property.deprecated.replaceAll(
+                        "\\b" + Pattern.quote(anchorByPropertyName.getKey()) + "\\b",
+                        "[`%s`](%s)".formatted(anchorByPropertyName.getKey(), anchorByPropertyName.getValue())
+                    );
+                }
             }
         }
 
@@ -201,6 +205,7 @@ public class GenerateConfigDocs implements Callable<Integer> {
         public String example;
         public String category;
         public boolean required;
+        public String deprecated;
         public boolean hidden;
 
         public String env() {
@@ -255,6 +260,7 @@ public class GenerateConfigDocs implements Callable<Integer> {
                     .add("example='" + example + "'")
                     .add("category='" + category + "'")
                     .add("required=" + required)
+                    .add("deprecated='" + deprecated + "'")
                     .add("hidden=" + hidden)
                     .toString();
         }
@@ -301,6 +307,9 @@ public class GenerateConfigDocs implements Callable<Integer> {
                     currentProperty.hidden = true;
                 } else if (line.matches("^@required\\s*$")) {
                     currentProperty.required = true;
+                } else if (line.matches("^@deprecated:\\s.*")) {
+                    final String[] parts = line.split(":", 2);
+                    currentProperty.deprecated = parts[1].trim();
                 } else if (line.matches("^[\\w.-]+=.*$")) {
                     final String[] parts = line.split("=", 2);
                     currentProperty.name = parts[0].trim();
