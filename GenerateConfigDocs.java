@@ -131,13 +131,13 @@ public class GenerateConfigDocs implements Callable<Integer> {
                 if (property.description != null && !property.description.isBlank()) {
                     property.description = property.description.replaceAll(
                         "\\b" + Pattern.quote(anchorByPropertyName.getKey()) + "\\b",
-                        "[`%s`](%s)".formatted(anchorByPropertyName.getKey(), anchorByPropertyName.getValue())
+                        "[`%s`](#%s)".formatted(anchorByPropertyName.getKey(), anchorByPropertyName.getValue())
                     );
                 }
                 if (property.deprecated != null && !property.deprecated.isBlank()) {
                     property.deprecated = property.deprecated.replaceAll(
                         "\\b" + Pattern.quote(anchorByPropertyName.getKey()) + "\\b",
-                        "[`%s`](%s)".formatted(anchorByPropertyName.getKey(), anchorByPropertyName.getValue())
+                        "[`%s`](#%s)".formatted(anchorByPropertyName.getKey(), anchorByPropertyName.getValue())
                     );
                 }
             }
@@ -216,8 +216,8 @@ public class GenerateConfigDocs implements Callable<Integer> {
                     .toUpperCase();
         }
 
-        private String anchor() {
-            return "#%s".formatted(name.replaceAll("\\.", "").toLowerCase());
+        public String anchor() {
+            return name.replaceAll("\\.", "").toLowerCase();
         }
 
         private void validate() {
